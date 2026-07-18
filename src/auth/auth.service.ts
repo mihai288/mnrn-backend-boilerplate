@@ -1,4 +1,9 @@
-import { ConflictException, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { UsersService } from '../users/users.service';
@@ -14,6 +19,10 @@ export class AuthService {
   ) {}
 
   async register(registerDto: RegisterDto) {
+    if (!registerDto.password || !registerDto.password.trim()) {
+      throw new BadRequestException('Password is required');
+    }
+
     const existing = await this.usersService.findByEmail(registerDto.email);
     if (existing) {
       throw new ConflictException('Email already registered');
