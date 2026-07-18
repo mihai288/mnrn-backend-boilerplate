@@ -1,4 +1,4 @@
-import { ConflictException, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, ConflictException, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
@@ -58,6 +58,15 @@ describe('AuthService', () => {
         password: 'secret123',
       }),
     ).rejects.toThrow(ConflictException);
+  });
+
+  it('rejects registration without a password', async () => {
+    await expect(
+      authService.register({
+        name: 'Jane Doe',
+        email: 'jane@example.com',
+      } as any),
+    ).rejects.toThrow(BadRequestException);
   });
 
   it('logs in a registered user and returns a token', async () => {
