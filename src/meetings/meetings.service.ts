@@ -9,6 +9,10 @@ import { Meeting, MeetingDocument } from './schemas/meeting.schema';
 export class MeetingsService {
   constructor(@InjectModel(Meeting.name) private readonly meetingModel: Model<MeetingDocument>) {}
 
+  async findAll(): Promise<MeetingDocument[]> {
+    return this.meetingModel.find().exec();
+  }
+
   async create(createMeetingDto: CreateMeetingDto): Promise<MeetingDocument> {
     const createdMeeting = new this.meetingModel(createMeetingDto);
     return createdMeeting.save();
