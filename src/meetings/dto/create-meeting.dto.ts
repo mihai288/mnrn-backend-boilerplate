@@ -12,4 +12,8 @@ export class CreateMeetingDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsOptional()
+  @IsString()
+  transcript?: string;
 }
