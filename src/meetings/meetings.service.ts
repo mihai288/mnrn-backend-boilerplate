@@ -9,21 +9,26 @@ import { Meeting, MeetingDocument } from './schemas/meeting.schema';
 export class MeetingsService {
   constructor(@InjectModel(Meeting.name) private readonly meetingModel: Model<MeetingDocument>) {}
 
-  async findAll(): Promise<MeetingDocument[]> {
-    return this.meetingModel.find().exec();
+  async findAll(userId: string): Promise<MeetingDocument[]> {
+    return this.meetingModel.find({ userId }).exec();
   }
 
-  async create(createMeetingDto: CreateMeetingDto): Promise<MeetingDocument> {
-    const createdMeeting = new this.meetingModel(createMeetingDto);
+  async create(userId: string, createMeetingDto: CreateMeetingDto): Promise<MeetingDocument> {
+    const createdMeeting = new this.meetingModel({ ...createMeetingDto, userId });
     return createdMeeting.save();
   }
 
   async updateTranscript(
+    userId: string,
     id: string,
     updateTranscriptDto: UpdateTranscriptDto,
   ): Promise<MeetingDocument> {
     const meeting = await this.meetingModel
-      .findByIdAndUpdate(id, { transcript: updateTranscriptDto.transcript }, { new: true })
+      .findOneAndUpdate(
+        { _id: id, userId },
+        { transcript: updateTranscriptDto.transcript },
+        { new: true },
+      )
       .exec();
     if (!meeting) {
       throw new NotFoundException(`Meeting #${id} not found`);
@@ -31,8 +36,8 @@ export class MeetingsService {
     return meeting;
   }
 
-  async process(id: string): Promise<MeetingDocument> {
-    const meeting = await this.meetingModel.findById(id).exec();
+  async process(userId: string, id: string): Promise<MeetingDocument> {
+    const meeting = await this.meetingModel.findOne({ _id: id, userId }).exec();
     if (!meeting) {
       throw new NotFoundException(`Meeting #${id} not found`);
     }

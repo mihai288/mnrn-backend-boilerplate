@@ -8,6 +8,9 @@ export class Meeting {
   @Prop({ required: true, trim: true })
   title!: string;
 
+  @Prop({ required: true, index: true })
+  userId!: string;
+
   @Prop({ required: true })
   date!: Date;
 
