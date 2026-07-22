@@ -14,7 +14,11 @@ export class MeetingsService {
   }
 
   async create(userId: string, createMeetingDto: CreateMeetingDto): Promise<MeetingDocument> {
-    const createdMeeting = new this.meetingModel({ ...createMeetingDto, userId });
+    const createdMeeting = new this.meetingModel({
+      ...createMeetingDto,
+      attendees: createMeetingDto.attendees ?? [],
+      userId,
+    });
     return createdMeeting.save();
   }
 

@@ -20,6 +20,18 @@ export class Meeting {
   @Prop({ trim: true })
   transcript?: string;
 
+  @Prop({
+    type: [
+      {
+        name: { type: String, trim: true, required: true },
+        email: { type: String, trim: true },
+        role: { type: String, trim: true },
+      },
+    ],
+    default: [],
+  })
+  attendees!: Array<{ name: string; email?: string; role?: string }>;
+
   @Prop({ enum: ['idle', 'processing', 'completed', 'failed'], default: 'idle' })
   status!: string;
 }
