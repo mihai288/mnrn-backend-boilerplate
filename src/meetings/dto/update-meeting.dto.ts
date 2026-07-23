@@ -1,6 +1,7 @@
 import { Type } from 'class-transformer';
 import {
   IsArray,
+  IsBoolean,
   IsDateString,
   IsIn,
   IsNotEmpty,
@@ -8,7 +9,7 @@ import {
   IsString,
   ValidateNested,
 } from 'class-validator';
-import { MeetingAttendeeDto } from './create-meeting.dto';
+import { MeetingActionItemDto, MeetingAttendeeDto } from './create-meeting.dto';
 
 export class UpdateMeetingDto {
   @IsOptional()
@@ -33,6 +34,12 @@ export class UpdateMeetingDto {
   @ValidateNested({ each: true })
   @Type(() => MeetingAttendeeDto)
   attendees?: MeetingAttendeeDto[];
+
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => MeetingActionItemDto)
+  actionItems?: MeetingActionItemDto[];
 
   @IsOptional()
   @IsIn(['idle', 'processing', 'completed', 'failed'])

@@ -34,6 +34,24 @@ export class Meeting {
 
   @Prop({ enum: ['idle', 'processing', 'completed', 'failed'], default: 'idle' })
   status!: string;
+
+  @Prop({ trim: true })
+  summary?: string;
+
+  @Prop({ type: [String], default: [] })
+  keyPoints!: string[];
+
+  @Prop({
+    type: [
+      {
+        task: { type: String, trim: true, required: true },
+        assignee: { type: String, trim: true, required: true },
+        checked: { type: Boolean, default: false, required: true },
+      },
+    ],
+    default: [],
+  })
+  actionItems!: Array<{ task: string; assignee: string; checked: boolean }>;
 }
 
 export const MeetingSchema = SchemaFactory.createForClass(Meeting);

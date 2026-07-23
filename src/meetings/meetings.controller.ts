@@ -15,6 +15,11 @@ export class MeetingsController {
     return this.meetingsService.findAll(req.user.id);
   }
 
+  @Get(':id')
+  findOne(@Req() req: { user: { id: string } }, @Param('id') id: string) {
+    return this.meetingsService.findOne(req.user.id, id);
+  }
+
   @Post()
   create(@Req() req: { user: { id: string } }, @Body() createMeetingDto: CreateMeetingDto) {
     return this.meetingsService.create(req.user.id, createMeetingDto);
