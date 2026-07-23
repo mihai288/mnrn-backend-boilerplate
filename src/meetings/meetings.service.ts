@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateMeetingDto } from './dto/create-meeting.dto';
+import { UpdateMeetingDto } from './dto/update-meeting.dto';
 import { UpdateTranscriptDto } from './dto/update-transcript.dto';
 import { Meeting, MeetingDocument } from './schemas/meeting.schema';
 
@@ -20,6 +21,26 @@ export class MeetingsService {
       userId,
     });
     return createdMeeting.save();
+  }
+
+  async update(
+    userId: string,
+    id: string,
+    updateMeetingDto: UpdateMeetingDto,
+  ): Promise<MeetingDocument> {
+    if (Object.keys(updateMeetingDto).length === 0) {
+      throw new BadRequestException('At least one field is required for update');
+    }
+
+    const meeting = await this.meetingModel
+      .findOneAndUpdate({ _id: id, userId }, updateMeetingDto, { new: true, runValidators: true })
+      .exec();
+
+    if (!meeting) {
+      throw new NotFoundException(`Meeting #${id} not found`);
+    }
+
+    return meeting;
   }
 
   async updateTranscript(

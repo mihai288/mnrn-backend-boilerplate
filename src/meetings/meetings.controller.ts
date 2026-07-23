@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Patch, Post, Req, UseGuards } from '@nestjs/common';
 import { CreateMeetingDto } from './dto/create-meeting.dto';
+import { UpdateMeetingDto } from './dto/update-meeting.dto';
 import { UpdateTranscriptDto } from './dto/update-transcript.dto';
 import { MeetingsService } from './meetings.service';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
@@ -17,6 +18,15 @@ export class MeetingsController {
   @Post()
   create(@Req() req: { user: { id: string } }, @Body() createMeetingDto: CreateMeetingDto) {
     return this.meetingsService.create(req.user.id, createMeetingDto);
+  }
+
+  @Patch(':id')
+  update(
+    @Req() req: { user: { id: string } },
+    @Param('id') id: string,
+    @Body() updateMeetingDto: UpdateMeetingDto,
+  ) {
+    return this.meetingsService.update(req.user.id, id, updateMeetingDto);
   }
 
   @Patch(':id/transcript')
